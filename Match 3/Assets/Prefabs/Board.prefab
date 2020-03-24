@@ -45,5 +45,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 4
   height: 4
-  tilePrefab: {fileID: 8979107502540388763, guid: 1753ca39a4638504c905aa6781f0d22b,
+  tilePrefab: {fileID: 1219701911899601470, guid: 1753ca39a4638504c905aa6781f0d22b,
     type: 3}
+  dots:
+  - {fileID: 639546174850250255, guid: d5ddac3d6b5e13c4997f24f0cb90a980, type: 3}
+  - {fileID: 5458051718978466028, guid: afc8d75183eae18438a072ef9a526788, type: 3}
+  - {fileID: 139200021976223654, guid: fd15b744d1f0e2a448745aba203258e2, type: 3}
+  - {fileID: 7833480433458713697, guid: 3db340bbb9b5174488cda39db025956c, type: 3}
+  - {fileID: 6484988571643220758, guid: c2ab3e9ccb5c48544bdc6add2371b58c, type: 3}
+  - {fileID: 407138588513855622, guid: 1d7e70dcda7a7ae4d9e7bfe15c189df9, type: 3}
+  - {fileID: 1925147653052017491, guid: db69d8ff1292e124691d227b95a9971e, type: 3}
+  - {fileID: 2707732163445852992, guid: 4abd9552f9c46624a85e6e426093dc0d, type: 3}
+  - {fileID: 1819528334379886909, guid: c4a63af877f271d41acf647c07caf47e, type: 3}

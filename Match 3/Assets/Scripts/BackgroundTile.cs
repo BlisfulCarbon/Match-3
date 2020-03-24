@@ -2,25 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackgroundTile : MonoBehaviour
-{
-    public GameObject[] dots;
-
-    void Start()
-    {
-        Initialize();
+public class BackgroundTile : MonoBehaviour{
+    void Start(){
+      
     }
 
-    void Update()
-    {
+    void Update(){
         
-    }
-
-    private void Initialize()
-    {
-        int dotToUse = Random.Range(0, dots.Length);        
-        GameObject dot = Instantiate(dots[dotToUse], transform.position, Quaternion.identity);
-        dot.transform.parent = this.transform;
-        dot.name = this.gameObject.name;
     }
 }
