@@ -2,27 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState {
+    wait, move
+}
+
 public class Board : MonoBehaviour
 {
+    public GameState currentState = GameState.move;
     public int width;
     public int height;
+    public int offSet;
     public GameObject tilePrefab;
-
     public GameObject[] dots;
-    private BackgroundTile[,] allTiles;
-
     public GameObject[,] allDots;
 
-    void Start()
-    {
+    private BackgroundTile[,] allTiles;
+
+    void Start(){
         allTiles = new BackgroundTile[width, height];
         allDots = new GameObject[width, height];
         SetUp();
     }
 
-    public void RefrashBoard() {
-
-        
+    public void RefrashBoard(){
         GameObject[,] destroyedDots = allDots;
         BackgroundTile[,] destroyedTiles = allTiles;
 
@@ -39,14 +41,12 @@ public class Board : MonoBehaviour
                 destroyedTiles[j, i] = null;
             }
         }
-
-     
     }
 
     private void SetUp(){
         for(int i = 0; i < width; i++){
             for(int j = 0; j < height; j++){
-                Vector2 columnPosition = new Vector2(i, j);
+                Vector2 columnPosition = new Vector2(i, j + offSet);
                 string columnName = "(" + i + ", " + j + ")";
 
                 GameObject backgroundTile = Instantiate(tilePrefab, columnPosition, Quaternion.identity) as GameObject;
@@ -64,6 +64,9 @@ public class Board : MonoBehaviour
                 maxIteerations = 0;
           
                 GameObject dot = Instantiate(dots[dotToUse], columnPosition, Quaternion.identity);
+                dot.GetComponent<Dot>().row = j;
+                dot.GetComponent<Dot>().column = i;
+                
                 dot.transform.parent = backgroundTile.transform;
                 dot.name = columnName;
 
@@ -95,7 +98,7 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private void DestroyMatchesAt(int column, int row) {
+    private void DestroyMatchesAt(int column, int row){
         if(allDots[column, row].GetComponent<Dot>().isMatched) {
             Destroy(allDots[column, row]);
             allDots[column, row] = null;
@@ -113,7 +116,7 @@ public class Board : MonoBehaviour
         StartCoroutine(DecreaseRowCo());
     }
 
-    private IEnumerator DecreaseRowCo() {
+    private IEnumerator DecreaseRowCo(){
         int nullCount = 0;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -130,7 +133,7 @@ public class Board : MonoBehaviour
         StartCoroutine(FillBoardCo());
     }
 
-    private void RefillBoard() {
+    private void RefillBoard(){
        for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
                 if(allDots[i, j] == null) {
@@ -138,6 +141,8 @@ public class Board : MonoBehaviour
                     int dotToUse = Random.Range(0, dots.Length);
                     GameObject piece = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
                     allDots[i, j] = piece;
+                    piece.GetComponent<Dot>().row = j;
+                    piece.GetComponent<Dot>().column = i;
                 }
             }
         }
@@ -157,13 +162,15 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private IEnumerator FillBoardCo() {
+    private IEnumerator FillBoardCo(){
         RefillBoard();
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.2f);
 
         while (MatchesOnBoard()) {
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(.2f);
             DestroyMatches();
         }
+        yield return new WaitForSeconds(.5f);
+        currentState = GameState.move;
     }
 }
