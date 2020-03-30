@@ -11,27 +11,23 @@ public class Dot : MonoBehaviour {
 
     public int previousColumn;
     public int previousRow;
-
     public float swiperAngle = 0;
-
     public bool isMatched;
-
     public float swipeResist = 1f;
 
+    private FindMatches findMatches;
     private GameObject otherDot;
-
     private Board board;
     private Vector2 firstTouchPosition;
     private Vector2 finalTouchPosition;
-
     private Vector2 temPosition;
 
     void Start() {
         board = FindObjectOfType<Board>();
+        findMatches = FindObjectOfType<FindMatches>();
     }
 
     void Update() {
-        FindMatches();
         if (isMatched) {
             SpriteRenderer sprite = GetComponent<SpriteRenderer>();
             sprite.color = new Color(0.2f, 0.2f, 0.2f);
@@ -40,14 +36,16 @@ public class Dot : MonoBehaviour {
         targetX = column;
         targetY = row;
 
-        if (Mathf.Abs(targetX - transform.position.x) > .6) {
+        if (Mathf.Abs(targetX - transform.position.x) > .6f) {
             // Move towards the target
             temPosition = new Vector2(targetX, transform.position.y);
-            transform.position = Vector2.Lerp(transform.position, temPosition, .2f);
+            transform.position = Vector2.Lerp(transform.position, temPosition, .1f);
 
             if (board.allDots[column, row] != this.gameObject) {
                 board.allDots[column, row] = this.gameObject;
             }
+
+            findMatches.FindAllMatches();
         }
         else {
             // Directly set the position
@@ -55,14 +53,16 @@ public class Dot : MonoBehaviour {
             transform.position = temPosition;
         }
 
-        if (Mathf.Abs(targetY - transform.position.y) > .6) {
+        if (Mathf.Abs(targetY - transform.position.y) > .6f) {
             // Move towards the target
             temPosition = new Vector2(transform.position.x, targetY);
-            transform.position = Vector2.Lerp(transform.position, temPosition, .2f);
+            transform.position = Vector2.Lerp(transform.position, temPosition, .1f);
 
             if (board.allDots[column, row] != this.gameObject) {
                 board.allDots[column, row] = this.gameObject;
             }
+
+           findMatches.FindAllMatches();
         }
         else {
             // Directly set the position
@@ -152,31 +152,5 @@ public class Dot : MonoBehaviour {
             row -= 1;
         }
         StartCoroutine(CheckMoveCo());
-    }
-
-    void FindMatches() {
-        if (column > 0 && column < board.width - 1) {
-            GameObject leftDot = board.allDots[column - 1, row];
-            GameObject rightDot = board.allDots[column + 1, row];
-
-            if (leftDot != null && rightDot != null && leftDot != this.gameObject && rightDot != this.gameObject) {
-                if (leftDot.tag == this.gameObject.tag && rightDot.tag == this.gameObject.tag) {
-                    leftDot.GetComponent<Dot>().isMatched = true;
-                    rightDot.GetComponent<Dot>().isMatched = true;
-                    isMatched = true;
-                }
-            }
-        }
-        if (row > 0 && row < board.height - 1) {
-            GameObject upDot = board.allDots[column, row - 1];
-            GameObject downDot = board.allDots[column, row + 1];
-            if (upDot != null && downDot != null && upDot != this.gameObject && downDot != this.gameObject) {
-                if (upDot.tag == this.gameObject.tag && downDot.tag == this.gameObject.tag) {
-                    upDot.GetComponent<Dot>().isMatched = true;
-                    downDot.GetComponent<Dot>().isMatched = true;
-                    isMatched = true;
-                }
-            }
-        }
     }
 }

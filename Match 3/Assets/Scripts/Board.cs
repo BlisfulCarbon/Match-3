@@ -6,8 +6,7 @@ public enum GameState {
     wait, move
 }
 
-public class Board : MonoBehaviour
-{
+public class Board : MonoBehaviour {
     public GameState currentState = GameState.move;
     public int width;
     public int height;
@@ -17,14 +16,18 @@ public class Board : MonoBehaviour
     public GameObject[,] allDots;
 
     private BackgroundTile[,] allTiles;
+    private FindMatches findMatches;
 
-    void Start(){
+    void Start() {
+        findMatches = FindObjectOfType<FindMatches>();
+
         allTiles = new BackgroundTile[width, height];
         allDots = new GameObject[width, height];
+
         SetUp();
     }
 
-    public void RefrashBoard(){
+    public void RefrashBoard() {
         GameObject[,] destroyedDots = allDots;
         BackgroundTile[,] destroyedTiles = allTiles;
 
@@ -43,7 +46,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    private void SetUp(){
+    private void SetUp() {
         for(int i = 0; i < width; i++){
             for(int j = 0; j < height; j++){
                 Vector2 columnPosition = new Vector2(i, j + offSet);
@@ -98,8 +101,9 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private void DestroyMatchesAt(int column, int row){
+    private void DestroyMatchesAt(int column, int row) {
         if(allDots[column, row].GetComponent<Dot>().isMatched) {
+            findMatches.currentMatches.Remove(allDots[column, row]);
             Destroy(allDots[column, row]);
             allDots[column, row] = null;
         }
@@ -116,7 +120,7 @@ public class Board : MonoBehaviour
         StartCoroutine(DecreaseRowCo());
     }
 
-    private IEnumerator DecreaseRowCo(){
+    private IEnumerator DecreaseRowCo() {
         int nullCount = 0;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -129,11 +133,11 @@ public class Board : MonoBehaviour
             }
             nullCount = 0;
         }
-        yield return new WaitForSeconds(.4f);
+        yield return new WaitForSeconds(.3f);
         StartCoroutine(FillBoardCo());
     }
 
-    private void RefillBoard(){
+    private void RefillBoard() {
        for(int i = 0; i < width; i++) {
             for(int j = 0; j < height; j++) {
                 if(allDots[i, j] == null) {
@@ -162,7 +166,7 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private IEnumerator FillBoardCo(){
+    private IEnumerator FillBoardCo() {
         RefillBoard();
         yield return new WaitForSeconds(.2f);
 
